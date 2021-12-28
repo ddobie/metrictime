@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+    function startTime() {
+        var today=new Date();
+        var day = today.getDate();
+        var month = today.getMonth();
+        var year = today.getFullYear();
+        var h=today.getHours();
+        var m=today.getMinutes();
+        var s=today.getSeconds();
+        var ms = today.getMilliseconds()
+        
+        let {mh, mm} = convertMetric(h,m,s,ms);
+        
+        
+        m = checkTime(m);
+        s = checkTime(s);
+        
+        //mh = checkTime(mh);
+        //mm = checkTime(mm);
+        
+        mm = checkmetricTime(mm)
+        mh = checkTime(mh)
+        
+        
+        
+        
+        document.getElementById('txt').innerHTML = "The local metric time is "+year + "-" + month + "-" + day + " " + mh + ":" + mm;
+        var t = setTimeout(function(){startTime()},100);
+    }
+
+    function checkTime(i) {
+        if (i<10) {i = "0" + i};  // add zero in front of numbers < 10
+        return i;
+    }
+    
+    function checkmetricTime(i) {
+        i = parseInt(i,10)
+        if (i<10) {i = "00" + i;}  // add zero in front of numbers < 10
+        else if (i<100) {i = "0"+i;}
+        return i;
+    }
+    
+    function convertMetric(h,m,s,ms) {
+        const seconds_in_day = 60*60*24;
+        const mminutes_in_day = 1e5;
+        const mminutes_in_mhours = 1e3;
+        
+        const idivmod = (a, b) => [a/b |0, a%b];
+        
+        var total_seconds = (parseInt(h)*60+parseInt(m))*60+parseInt(s)+parseInt(ms)/1e3;
+        var fractional_day = total_seconds/seconds_in_day;
+        
+        var total_metric_minutes = fractional_day * mminutes_in_day;
+        
+        var mh;
+        var mm;
+        
+        mm = total_metric_minutes % mminutes_in_mhours
+        mh = (total_metric_minutes - mm) / mminutes_in_mhours
+        
+        return {mh, mm};
+    }
+        
+</script>  
+</head>
+
+<body onload="startTime()">
+
+    <div id="txt"></div>
+
+</body>
+</html>
